@@ -32,7 +32,7 @@ const WishModal = ({ isOpen, onClose, onAddWish }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Add New Wish</h2>
+        <h2>Add New Gift</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="text">Wish Text</label>
