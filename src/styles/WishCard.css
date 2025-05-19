@@ -1,0 +1,122 @@
+.wish-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 1rem;
+  padding: 1rem;
+  display: flex;
+  position: relative;
+  transition: transform 0.2s;
+  width: calc(100% - 2rem);
+}
+
+.wish-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.wish-image {
+  width: 120px;
+  height: 120px;
+  margin-right: 1rem;
+  flex-shrink: 0;
+}
+
+.wish-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.wish-content {
+  flex-grow: 1;
+  padding-right: 60px;
+}
+
+.wish-content h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.wish-link {
+  display: inline-block;
+  color: #2196F3;
+  text-decoration: none;
+  margin: 0.5rem 0;
+}
+
+.wish-link:hover {
+  text-decoration: underline;
+}
+
+.wish-comments {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.wish-actions {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.like-button,
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.like-button svg,
+.delete-button svg {
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s;
+}
+
+.like-button svg {
+  stroke: #000000;
+  fill: none;
+}
+
+.like-button.liked svg {
+  stroke: #ff0000;
+  fill: #ff0000;
+}
+
+.delete-button svg {
+  color: var(--text-color);
+}
+
+.like-button:hover,
+.delete-button:hover {
+  transform: scale(1.1);
+}
+
+.like-button.liked {
+  animation: likeAnimation 0.3s ease;
+}
+
+@keyframes likeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive grid layout */
+@media (min-width: 768px) {
+  .wish-card {
+    width: calc(50% - 2rem);
+  }
+} 
