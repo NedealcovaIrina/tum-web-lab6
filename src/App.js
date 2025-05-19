@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import WishlistForm from "./components/WishlistForm";
+import WishlistList from "./components/WishlistList";
+import "./styles/themes.css";
 
-function App() {
+const App = () => {
+  // Загружаем сохранённые данные из localStorage
+  const [wishlist, setWishlist] = useState(() => {
+    return JSON.parse(localStorage.getItem("wishlist")) || [];
+  });
+
+  // Сохраняем данные в localStorage при изменениях
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  // Управление темой (сохраняется в localStorage)
+  const [darkMode, setDarkMode] = useState(() => {
+    return JSON.parse(localStorage.getItem("darkMode")) || false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const toggleTheme = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const addItem = (item) => setWishlist([...wishlist, item]);
+
+  const likeItem = (id) => {
+    setWishlist(
+      wishlist.map((item) =>
+        item.id === id ? { ...item, liked: !item.liked } : item
+      )
+    );
+  };
+
+  const deleteItem = (id) => {
+    setWishlist(wishlist.filter((item) => item.id !== id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={darkMode ? "dark-theme" : "light-theme"}>
+      <button className="theme-toggle" onClick={toggleTheme}>
+        {darkMode ? "🌞 Светлая тема" : "🌙 Тёмная тема"}
+      </button>
+      <h1>Мой Вишлист 🎁</h1>
+      <WishlistForm onAdd={addItem} />
+      <WishlistList wishlist={wishlist} onLike={likeItem} onDelete={deleteItem} />
     </div>
   );
-}
+};
 
 export default App;
