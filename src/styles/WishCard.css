@@ -7,7 +7,6 @@
   display: flex;
   position: relative;
   transition: transform 0.2s;
-  width: calc(100% - 2rem);
 }
 
 .wish-card:hover {
@@ -67,7 +66,8 @@
 }
 
 .like-button,
-.delete-button {
+.delete-button,
+.check-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -79,7 +79,8 @@
 }
 
 .like-button svg,
-.delete-button svg {
+.delete-button svg,
+.check-button svg {
   width: 24px;
   height: 24px;
   transition: all 0.2s;
@@ -100,7 +101,8 @@
 }
 
 .like-button:hover,
-.delete-button:hover {
+.delete-button:hover,
+.check-button:hover {
   transform: scale(1.1);
 }
 
@@ -116,7 +118,7 @@
 
 /* Responsive grid layout */
 @media (min-width: 768px) {
-  .wish-card {
+  /* .wish-card {
     width: calc(50% - 2rem);
-  }
+  } */
 } 

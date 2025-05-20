@@ -1,7 +1,14 @@
 import React from 'react';
 import '../styles/WishCard.css';
 
-const WishCard = ({ wish, onLike, onDelete }) => {
+const WishCard = ({ wish, onLike, onDelete, onToggleFulfilled }) => {
+
+  const CheckIcon = ({ isFulfilled }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`size-6 check-icon ${isFulfilled ? 'fulfilled' : ''}`}>
+      <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
+    </svg>
+  );
+
   return (
     <div className="wish-card">
       {wish.image && (
@@ -28,7 +35,14 @@ const WishCard = ({ wish, onLike, onDelete }) => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
           </svg>
         </button>
-        <button 
+        <button
+          className="check-button"
+          onClick={() => onToggleFulfilled(wish.id)}
+          aria-label={wish.fulfilled ? "Mark as unfulfilled" : "Mark as fulfilled"}
+        >
+          <CheckIcon isFulfilled={wish.fulfilled} />
+        </button>
+        <button
           className="delete-button"
           onClick={() => onDelete(wish.id)}
           aria-label="Delete wish"
