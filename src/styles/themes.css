@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 2rem 1rem 2rem;
+  padding: 1.5rem 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -45,26 +45,93 @@
   font-weight: bold;
 }
 
-.wish-search-input {
-  margin-top: 0.5rem; /* Space below the title */
-  padding: 0.5rem 1rem;
+/* Styles for container below the header */
+.content-below-header {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  width: 100%;
+  padding: 0 2rem;
+  margin-top: 1.5rem; /* Space below the header */
+  box-sizing: border-box;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
+  overflow: visible; /* Allow menu to overflow */
+  height: 45px;
+  margin-bottom: 1rem;
+}
+
+.wish-search-input {
+  flex-grow: 1;
+  padding: 0.5rem 1rem;
+  padding-right: 120px;
+  border: none;
+  border-radius: 4px;
   font-size: 1rem;
-  width: 100%; /* Make input take full width of its container */
-  box-sizing: border-box; /* Include padding and border in the element's total width */
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.filter-buttons {
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  z-index: 1;
+}
+
+.filter-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.filter-button svg {
+  width: 18px;
+  height: 18px;
+  transition: all 0.2s;
+  color: var(--text-light);
+}
+
+.dark-theme .filter-button svg {
+  color: var(--text-dark);
+}
+
+.filter-button:hover {
+  transform: scale(1.1);
+}
+
+.filter-button.active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .filter-button.active {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .light-theme .wish-search-input {
   background-color: white;
   color: var(--text-light);
-  border-color: #ccc;
 }
 
 .dark-theme .wish-search-input {
   background-color: #060020;
   color: var(--text-dark);
-  border-color: #447cbc;
 }
 
 .wishlist-title {
@@ -86,7 +153,7 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
-  margin-left: auto;
+  margin-left: auto; /* Ensure theme toggle stays on the right in the header */
 }
 
 .theme-icon {
@@ -95,62 +162,25 @@
   display: block;
 }
 
-.add-wish-row {
+/* Container to align button to the right */
+.button-below-search-container {
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
   width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 1rem 2rem 0 2rem;
   box-sizing: border-box;
-}
-
-.add-wish-button {
-  background: transparent;
-  border: none;
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-}
-
-.add-wish-button:hover {
-  background: #222;
-}
-
-.plus-icon {
-  width: 64px;
-  height: 64px;
-  display: block;
-  color: #fff;
-}
-
-.light-theme .add-wish-button {
-  background: transparent;
-}
-.light-theme .plus-icon {
-  color: #000000;
-}
-
-.dark-theme .add-wish-button {
-  background: transparent;
-}
-.dark-theme .plus-icon {
-  color: #ffffff;
+  margin-bottom: 1.5rem; /* Space below the button before the wishlist */
 }
 
 .wishlist-container {
   max-width: 1400px;
   margin: 2rem auto;
   padding: 0 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
-  flex: 1;
   overflow-y: auto;
+  margin-top: 0;
 }
 
 /* Light theme */
@@ -258,7 +288,6 @@
   max-width: 350px;
   min-height: 100px;
   align-items: center;
-  flex-grow: 1;
 }
 
 .wish-card:hover {
@@ -343,7 +372,25 @@
   fill: none;
 }
 
+.light-theme .like-button svg {
+  stroke: #000000;
+}
+
+.dark-theme .like-button svg {
+  stroke: #ffffff;
+}
+
 .like-button.liked svg {
+  stroke: #ff0000;
+  fill: #ff0000;
+}
+
+.light-theme .like-button.liked svg {
+  stroke: #ff0000;
+  fill: #ff0000;
+}
+
+.dark-theme .like-button.liked svg {
   stroke: #ff0000;
   fill: #ff0000;
 }
@@ -357,13 +404,21 @@
   stroke: none; /* No stroke */
 }
 
+.light-theme .check-button svg {
+  fill: #000000;
+}
+
+.dark-theme .check-button svg {
+  fill: #ffffff; /* White fill in dark theme */
+}
+
 .check-button svg.fulfilled { /* Corrected selector */
   fill: #4CAF50; /* Green fill when fulfilled */
   stroke: none; /* No stroke */
 }
 
-.dark-theme .check-button svg {
-  fill: #000000; /* Black fill in dark theme */
+.light-theme .check-button svg.fulfilled { /* Corrected selector */
+  fill: #4CAF50; /* Green fill when fulfilled */
   stroke: none; /* No stroke */
 }
 
@@ -388,13 +443,6 @@
 }
 
 /* Grid layout for wishlist */
-.wishlist-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-}
-
 @media (min-width: 600px) {
   /* .wish-card flex styles removed */
 }
@@ -437,35 +485,34 @@
 }
 
 @media (max-width: 900px) {
-  .add-wish-oval {
-    font-size: 1.1rem !important;
-    min-width: 160px !important;
-    height: 45px !important;
-    padding: 0 20px !important;
-    border-radius: 25px !important;
+  .add-wish-oval,
+  .search-input-wrapper {
+    height: 45px;
   }
-  .wishlist-title {
-    font-size: 1.3rem;
+  .wish-search-input {
+    padding-right: 110px;
+  }
+  .filter-buttons {
+    right: 2.5rem;
   }
 }
 
 @media (max-width: 600px) {
-  .add-wish-oval {
-    min-width: 120px !important;
-    height: 35px !important;
-    font-size: 0.9rem !important;
-    padding: 0 12px !important;
-    border-radius: 20px !important;
+  .add-wish-oval,
+  .search-input-wrapper {
+    height: 35px;
   }
-  .wishlist-title {
-    font-size: 1rem;
+  .wish-search-input {
+    padding-right: 90px;
+  }
+  .filter-buttons {
+    right: 2rem;
   }
 }
 
 .add-wish-oval {
   min-width: 220px;
-  height: 60px;
-  padding: 0 36px;
+  padding: 0.5rem 36px;
   border: none;
   border-radius: 32px;
   font-size: 1.5rem;
@@ -477,7 +524,9 @@
   cursor: pointer;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  margin-bottom: 1.5rem;
+  margin-top: 0;
+  box-sizing: border-box;
+  height: 45px;
 }
 
 .light-theme .add-wish-oval {
@@ -494,4 +543,80 @@
 }
 .dark-theme .add-wish-oval:hover {
   background: #e4e4e4;
+}
+
+/* Styles for Sort Button and Menu */
+.sort-button {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.35rem;
+  transition: all 0.2s; /* Keep transition for other effects */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.sort-button:hover {
+  /* Removed transform: scale(1.1); to prevent movement on hover */
+}
+
+.burger-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  color: var(--text-light);
+}
+
+.dark-theme .burger-icon {
+  color: var(--text-dark);
+}
+
+.sort-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.dark-theme .sort-menu {
+  background-color: #0c1445;
+  border-color: #447cbc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sort-menu button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  color: var(--text-light);
+}
+
+.dark-theme .sort-menu button {
+  color: var(--text-dark);
+}
+
+.sort-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+.dark-theme .sort-menu button:hover {
+  background-color: #1a2a6b;
 }

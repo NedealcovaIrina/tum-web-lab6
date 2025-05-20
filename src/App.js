@@ -21,6 +21,13 @@ const PlusIcon = () => (
   </svg>
 );
 
+// Add Burger Icon component
+const BurgerIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="burger-icon">
+    <path fillRule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+  </svg>
+);
+
 const App = () => {
   // Загружаем сохранённые данные из localStorage
   const [wishlist, setWishlist] = useState(() => {
@@ -48,6 +55,15 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
+  const [filters, setFilters] = useState({
+    liked: false,
+    fulfilled: false
+  });
+
+  // Add state for sorting
+  const [sortCriteria, setSortCriteria] = useState('newest'); // 'newest', 'oldest', 'alphabetical'
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+
   const addWish = (wishData) => {
     const newWish = {
       id: Date.now(),
@@ -63,7 +79,7 @@ const App = () => {
       prevWishlist.map((wish) =>
         wish.id === id ? { ...wish, liked: !wish.liked } : wish
       ).sort((a, b) => {
-        // Sorting logic based on your hierarchy
+        // Existing sorting logic (priority based + newest first secondary)
         const getOrderScore = (wish) => {
           if (wish.liked && !wish.fulfilled) return 1;
           if (!wish.liked && !wish.fulfilled) return 2;
@@ -83,7 +99,7 @@ const App = () => {
 
   const deleteWish = (id) => {
     setWishlist(prevWishlist => prevWishlist.filter((wish) => wish.id !== id));
-    // No sort needed after deletion, new items are added at the beginning
+    // No sort needed after deletion
   };
 
   const toggleFulfilled = (id) => {
@@ -91,7 +107,7 @@ const App = () => {
       prevWishlist.map((wish) =>
         wish.id === id ? { ...wish, fulfilled: !wish.fulfilled } : wish
       ).sort((a, b) => {
-        // Sorting logic based on your hierarchy
+        // Existing sorting logic (priority based + newest first secondary)
         const getOrderScore = (wish) => {
           if (wish.liked && !wish.fulfilled) return 1;
           if (!wish.liked && !wish.fulfilled) return 2;
@@ -109,6 +125,52 @@ const App = () => {
     );
   };
 
+  const toggleFilter = (filterType) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterType]: !prev[filterType]
+    }));
+  };
+
+  // Function to handle sorting
+  const handleSortChange = (criteria) => {
+    setSortCriteria(criteria);
+    setIsSortMenuOpen(false); // Close menu after selection
+  };
+
+  // Apply filtering and then sorting
+  const filteredAndSortedWishlist = wishlist
+    .filter(wish => {
+      const matchesSearch = wish.text.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilters = (!filters.liked || wish.liked) && (!filters.fulfilled || wish.fulfilled);
+      return matchesSearch && matchesFilters;
+    })
+    .sort((a, b) => {
+      if (sortCriteria === 'newest') {
+        return b.id - a.id; // Newest first (default) - using id as timestamp
+      } else if (sortCriteria === 'oldest') {
+        return a.id - b.id; // Oldest first
+      } else if (sortCriteria === 'alphabetical') {
+        return a.text.localeCompare(b.text); // Alphabetical by text
+      } else if (sortCriteria === 'liked-priority') {
+        // Keep the existing priority logic if needed, or remove if replaced by new sorts
+         const getOrderScore = (wish) => {
+          if (wish.liked && !wish.fulfilled) return 1;
+          if (!wish.liked && !wish.fulfilled) return 2;
+          if (wish.liked && wish.fulfilled) return 3;
+          if (!wish.liked && wish.fulfilled) return 4;
+          return 5;
+        };
+        const scoreA = getOrderScore(a);
+        const scoreB = getOrderScore(b);
+        if (scoreA !== scoreB) {
+          return scoreA - scoreB;
+        }
+        return b.id - a.id;
+      }
+      return 0; // Default no sort
+    });
+
   return (
     <div className={`App ${darkMode ? "dark-theme" : "light-theme"}`}>
       <div className="app-header">
@@ -118,36 +180,67 @@ const App = () => {
         </button>
       </div>
 
-      <div className="search-bar-container">
-        <input
-          type="text"
-          placeholder="Search wishes..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="wish-search-input"
-        />
-      </div>
+      {/* Container for search, filter, and button below the header */}
+      <div className="content-below-header">
+        <div className="search-input-wrapper">
+          <input
+            type="text"
+            placeholder="Search wishes..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="wish-search-input"
+          />
+          <div className="filter-buttons">
+            <button
+              className={`filter-button ${filters.liked ? 'active' : ''}`}
+              onClick={() => toggleFilter('liked')}
+              aria-label="Filter liked wishes"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={filters.liked ? "#ff0000" : "none"} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+              </svg>
+            </button>
+            <button
+              className={`filter-button ${filters.fulfilled ? 'active' : ''}`}
+              onClick={() => toggleFilter('fulfilled')}
+              aria-label="Filter fulfilled wishes"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={filters.fulfilled ? "#4CAF50" : "none"} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </button>
+          </div>
+          {/* Burger button for sorting options */}
+          <button className="sort-button" onClick={() => setIsSortMenuOpen(!isSortMenuOpen)} aria-label="Sort wishlist">
+            <BurgerIcon />
+          </button>
+          {/* Sorting options menu */}
+          {isSortMenuOpen && (
+            <div className="sort-menu">
+              <button onClick={() => handleSortChange('newest')}>Sort by Newest</button>
+              <button onClick={() => handleSortChange('oldest')}>Sort by Oldest</button>
+              <button onClick={() => handleSortChange('alphabetical')}>Sort Alphabetically</button>
+            </div>
+          )}
+        </div>
 
-      <div className="add-wish-row">
-        <button className="add-wish-oval" onClick={() => setIsModalOpen(true)} aria-label="Add new gift">
-          Add New Gift
-        </button>
+        <div className="button-below-search-container">
+          <button className="add-wish-oval" onClick={() => setIsModalOpen(true)} aria-label="Add new gift">
+            Add New Gift
+          </button>
+        </div>
       </div>
 
       <div className="wishlist-container">
-        {wishlist
-          .filter(wish =>
-            wish.text.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((wish) => (
-            <WishCard
-              key={wish.id}
-              wish={wish}
-              onLike={likeWish}
-              onDelete={deleteWish}
-              onToggleFulfilled={toggleFulfilled}
-            />
-          ))}
+        {filteredAndSortedWishlist.map((wish) => (
+          <WishCard
+            key={wish.id}
+            wish={wish}
+            onLike={likeWish}
+            onDelete={deleteWish}
+            onToggleFulfilled={toggleFulfilled}
+          />
+        ))}
       </div>
 
       <WishModal
