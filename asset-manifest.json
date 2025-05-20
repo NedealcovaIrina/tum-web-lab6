@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/tum-web-lab6/static/css/main.f84ffd6e.css",
+    "main.js": "/tum-web-lab6/static/js/main.a1152819.js",
+    "static/js/453.0afdf592.chunk.js": "/tum-web-lab6/static/js/453.0afdf592.chunk.js",
+    "index.html": "/tum-web-lab6/index.html",
+    "main.f84ffd6e.css.map": "/tum-web-lab6/static/css/main.f84ffd6e.css.map",
+    "main.a1152819.js.map": "/tum-web-lab6/static/js/main.a1152819.js.map",
+    "453.0afdf592.chunk.js.map": "/tum-web-lab6/static/js/453.0afdf592.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f84ffd6e.css",
+    "static/js/main.a1152819.js"
+  ]
+}
