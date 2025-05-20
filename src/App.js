@@ -46,57 +46,108 @@ const App = () => {
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
   const addWish = (wishData) => {
     const newWish = {
       id: Date.now(),
       ...wishData,
-      liked: false
+      liked: false,
+      fulfilled: false
     };
     setWishlist([newWish, ...wishlist]);
   };
 
   const likeWish = (id) => {
-    setWishlist(
-      wishlist.map((wish) =>
+    setWishlist(prevWishlist =>
+      prevWishlist.map((wish) =>
         wish.id === id ? { ...wish, liked: !wish.liked } : wish
       ).sort((a, b) => {
-        if (a.liked === b.liked) {
-          return b.id - a.id; // Sort by newest first when liked status is the same
+        // Sorting logic based on your hierarchy
+        const getOrderScore = (wish) => {
+          if (wish.liked && !wish.fulfilled) return 1;
+          if (!wish.liked && !wish.fulfilled) return 2;
+          if (wish.liked && wish.fulfilled) return 3;
+          if (!wish.liked && wish.fulfilled) return 4;
+          return 5;
+        };
+        const scoreA = getOrderScore(a);
+        const scoreB = getOrderScore(b);
+        if (scoreA !== scoreB) {
+          return scoreA - scoreB;
         }
-        return a.liked ? -1 : 1; // Liked items go to the top
+        return b.id - a.id; // Tertiary sort: by newest first
       })
     );
   };
 
   const deleteWish = (id) => {
-    setWishlist(wishlist.filter((wish) => wish.id !== id));
+    setWishlist(prevWishlist => prevWishlist.filter((wish) => wish.id !== id));
+    // No sort needed after deletion, new items are added at the beginning
+  };
+
+  const toggleFulfilled = (id) => {
+    setWishlist(prevWishlist =>
+      prevWishlist.map((wish) =>
+        wish.id === id ? { ...wish, fulfilled: !wish.fulfilled } : wish
+      ).sort((a, b) => {
+        // Sorting logic based on your hierarchy
+        const getOrderScore = (wish) => {
+          if (wish.liked && !wish.fulfilled) return 1;
+          if (!wish.liked && !wish.fulfilled) return 2;
+          if (wish.liked && wish.fulfilled) return 3;
+          if (!wish.liked && wish.fulfilled) return 4;
+          return 5;
+        };
+        const scoreA = getOrderScore(a);
+        const scoreB = getOrderScore(b);
+        if (scoreA !== scoreB) {
+          return scoreA - scoreB;
+        }
+        return b.id - a.id; // Tertiary sort: by newest first
+      })
+    );
   };
 
   return (
     <div className={`App ${darkMode ? "dark-theme" : "light-theme"}`}>
       <div className="app-header">
-        <h1 className="wishlist-title">My Wishlist <span role="img" aria-label="gift">🎁</span></h1>
+        <h1 className="wishlist-title">My Wishlist</h1>
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
           {darkMode ? <SunIcon /> : <MoonIcon />}
         </button>
       </div>
 
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder="Search wishes..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="wish-search-input"
+        />
+      </div>
+
       <div className="add-wish-row">
-        <button className="add-wish-oval" onClick={() => setIsModalOpen(true)} aria-label="Add new wish">
+        <button className="add-wish-oval" onClick={() => setIsModalOpen(true)} aria-label="Add new gift">
           Add New Gift
         </button>
       </div>
 
       <div className="wishlist-container">
-        {wishlist.map((wish) => (
-          <WishCard
-            key={wish.id}
-            wish={wish}
-            onLike={likeWish}
-            onDelete={deleteWish}
-          />
-        ))}
+        {wishlist
+          .filter(wish =>
+            wish.text.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map((wish) => (
+            <WishCard
+              key={wish.id}
+              wish={wish}
+              onLike={likeWish}
+              onDelete={deleteWish}
+              onToggleFulfilled={toggleFulfilled}
+            />
+          ))}
       </div>
 
       <WishModal

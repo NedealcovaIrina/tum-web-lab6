@@ -45,6 +45,28 @@
   font-weight: bold;
 }
 
+.wish-search-input {
+  margin-top: 0.5rem; /* Space below the title */
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%; /* Make input take full width of its container */
+  box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.light-theme .wish-search-input {
+  background-color: white;
+  color: var(--text-light);
+  border-color: #ccc;
+}
+
+.dark-theme .wish-search-input {
+  background-color: #060020;
+  color: var(--text-dark);
+  border-color: #447cbc;
+}
+
 .wishlist-title {
   margin: 0;
   font-size: 2.2rem;
@@ -124,9 +146,8 @@
   max-width: 1400px;
   margin: 2rem auto;
   padding: 0 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1rem;
   flex: 1;
   overflow-y: auto;
@@ -235,8 +256,9 @@
   width: 100%;
   min-width: 0;
   max-width: 350px;
-  min-height: 120px;
+  min-height: 100px;
   align-items: center;
+  flex-grow: 1;
 }
 
 .wish-card:hover {
@@ -330,6 +352,26 @@
   color: var(--text-color);
 }
 
+.check-button svg {
+  fill: #000000; /* Black fill by default */
+  stroke: none; /* No stroke */
+}
+
+.check-button svg.fulfilled { /* Corrected selector */
+  fill: #4CAF50; /* Green fill when fulfilled */
+  stroke: none; /* No stroke */
+}
+
+.dark-theme .check-button svg {
+  fill: #000000; /* Black fill in dark theme */
+  stroke: none; /* No stroke */
+}
+
+.dark-theme .check-button svg.fulfilled {
+  fill: #4CAF50; /* Green fill when fulfilled in dark theme */
+  stroke: none; /* No stroke */
+}
+
 .like-button:hover,
 .delete-button:hover {
   transform: scale(1.1);
@@ -354,34 +396,22 @@
 }
 
 @media (min-width: 600px) {
-  /* .wishlist-container {
-    justify-content: flex-start;
-  } */
-  .wish-card {
-    flex: 1 1 calc(50% - 2rem);
-    max-width: calc(50% - 2rem);
-  }
+  /* .wish-card flex styles removed */
 }
 
 @media (min-width: 900px) {
-  .wish-card {
-    flex: 1 1 calc(33.333% - 2rem);
-    max-width: calc(33.333% - 2rem);
-  }
+  /* .wish-card flex styles removed */
 }
 
 @media (min-width: 1200px) {
-  .wish-card {
-    flex: 1 1 calc(25% - 2rem);
-    max-width: calc(25% - 2rem);
-  }
+  /* .wish-card flex styles removed */
 }
 
 @media (max-width: 599px) {
   .wish-card {
     max-width: 100%;
     min-width: 0;
-    flex: 1 1 100%;
+    min-height: 80px;
   }
   .wish-image {
     width: 60px;
